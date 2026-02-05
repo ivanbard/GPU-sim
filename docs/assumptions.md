@@ -1,4 +1,4 @@
-- Warp size of 32
+- Warp size = 32 threads
 - 1 SM
 - 1 instruction issued per cycle
 - instructions: ALU, LD, ST, EXIT
