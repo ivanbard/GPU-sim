@@ -10,6 +10,7 @@ int main(){
     //fina a ready warp
     //issue its current instruction (to execute)
     for (s.cycle = 0; s.cycle < 10; s.cycle++){
+        std::cout << "Current cycle: " << s.cycle << std::endl;
         int w = scheduler(s);
         if (w==-1){
             std::cout << "cycle: IDLE" << std::endl;
