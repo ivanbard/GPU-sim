@@ -30,13 +30,16 @@ class Warp{
 // this is all the warps in a specific SM
 std::vector<Warp> warps(num_warps);
 
+// check what warp meets "ready" condition, if none then SM is idle this cycle
 int scheduler(int curr_cycle){
     for (int i = 0; i < num_warps; i++){
         int idx = (rr_ptr + i) % num_warps;
         if (!warps[idx].isDone() && warps[idx].getStallUntil() <= curr_cycle){
-            rr_ptr = (idx + 1) % 4; // so that it starts AFTER current warp if this one is successful
-
+            rr_ptr = (idx + 1) % num_warps; // so that it starts AFTER current warp if this one is successful
+            std::cout << "Round-Robin Pointer: " << rr_ptr << std::endl;
+            return idx; 
         }
     }
+    return -1; //if no warp ready, idle, continue running
 
 }

@@ -1,11 +1,19 @@
 #include <iostream>
 #include "scheduler.cpp"
 
+int cycle = 0;
+
 int main(){
     //loop structure
     //fina a ready warp
     //issue its current instruction (to execute)
 
+    int w = scheduler(cycle);
+    if (w==-1){
+        std::cout << "cycle: IDLE" << std::endl;
+    } else {
+        std::cout << "cycle: issued warp " << w << std::endl;
+    }
     //update its state
     /*
     pc++
