@@ -6,6 +6,16 @@
 enum Op {ALU=0, LD=1, ST=2, EXIT=3};
 std::vector<Op> program = { LD, EXIT };
 
+const char* opToStr(Op op){
+    switch(op){
+        case ALU: return "ALU";
+        case LD: return "LD";
+        case ST: return "ST";
+        case EXIT: return "EXIT";
+        default: return "UNKNOWN"; //for any errors
+    }
+}
+
 int L = 5; //stall for L cycles
 
 void exec_inst(SimState& s, int warp_idx){
@@ -17,7 +27,7 @@ void exec_inst(SimState& s, int warp_idx){
         return; //say warp is done, and go back to sim loop
     }
 
-    std::cout << "PC= " << pc_val << "op= " << op << "\n";
+    std::cout << "[cycle " << s.cycle << "] warp " << warp_idx << " PC=" << pc_val << " op=" << opToStr(op) << " stall_until=" << s.warps[warp_idx].getStallUntil() << "\n";
     if (op == LD){ // pc_val = LD?
         s.warps[warp_idx].setStallUntil(s.cycle + L);
         s.warps[warp_idx].setPC(pc_val + 1);

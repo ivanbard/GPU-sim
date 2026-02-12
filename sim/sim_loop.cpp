@@ -1,5 +1,6 @@
 #include <iostream>
 #include "scheduler.h"
+#include "instructions.cpp"
 
 int main(){
     SimState s;
@@ -10,12 +11,11 @@ int main(){
     //fina a ready warp
     //issue its current instruction (to execute)
     for (s.cycle = 0; s.cycle < 10; s.cycle++){
-        std::cout << "Current cycle: " << s.cycle << std::endl;
         int w = scheduler(s);
         if (w==-1){
-            std::cout << "cycle: IDLE" << std::endl;
+            std::cout << "[cycle "<< s.cycle << "] IDLE" << std::endl;
         } else {
-            std::cout << "cycle: issued warp " << w << std::endl;
+            exec_inst(s, w);
         }
         //update its state
         /*
