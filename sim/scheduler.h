@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "stats.h"
 
 class Warp {
 private:
@@ -21,6 +22,7 @@ struct SimState {
     int cycle = 0;
     int rr_ptr = 0;
     std::vector<Warp> warps;
+    SimStats stats;
 };
 
 int scheduler(SimState& s);
