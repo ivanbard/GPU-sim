@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include "instructions.h"
+#include "memory.h"
 
 std::vector<Instruction> program = {}; // populated by load_program()
 
@@ -36,10 +37,14 @@ void exec_inst(SimState& s, int warp_idx){
         s.warps[warp_idx].setReg(inst.dst, result);
         s.warps[warp_idx].setPC(pc_val + 1);
     } else if (op == LD){
-        s.warps[warp_idx].setReg(inst.dst, warp_idx * 32); // placeholder value until memory model exists
+        int addr = s.warps[warp_idx].getReg(inst.src1);
+        s.warps[warp_idx].setReg(inst.dst, mem_read(addr)); // placeholder value until memory model exists
         s.warps[warp_idx].setStallUntil(s.cycle + L);
         s.warps[warp_idx].setPC(pc_val + 1);
     } else if (op == ST){
+        int val  = s.warps[warp_idx].getReg(inst.src1);
+        int addr = s.warps[warp_idx].getReg(inst.src2);
+        mem_write(addr, val);
         s.warps[warp_idx].setStallUntil(s.cycle + ST_L);
         s.warps[warp_idx].setPC(pc_val + 1);
     } else if (op == EXIT){

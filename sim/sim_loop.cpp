@@ -1,12 +1,19 @@
 #include <iostream>
 #include "scheduler.h"
 #include "instructions.h"
+#include "memory.h"
 
 int main(){
+    init_memory(256);
     load_program("../kernels/test.kern");
     SimState s;
     s.warps.resize(4);
     s.cycle = 0;
+
+    //init each warps r1 to a distinct addr so LOAD hits unique spots
+    for (int i = 0; i < (int)s.warps.size(); i++){
+        s.warps[i].setReg(1, i * 4); // warp 0 = adr 0, warp 1 = adr 4, etc
+    }
 
     int max_cycles = 1000;
     for (s.cycle = 0; s.cycle < max_cycles; s.cycle++){
