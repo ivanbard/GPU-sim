@@ -1,6 +1,6 @@
 #include <iostream>
 #include "scheduler.h"
-#include "instructions.cpp"
+#include "instructions.h"
 
 int main(){
     SimState s;

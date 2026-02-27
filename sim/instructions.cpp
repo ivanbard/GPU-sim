@@ -1,9 +1,6 @@
 #include <iostream>
-#include <vector>
-#include "scheduler.h"
+#include "instructions.h"
 
-// instruction encoding
-enum Op {ALU=0, LD=1, ST=2, EXIT=3};
 std::vector<Op> program = { LD, EXIT };
 
 const char* opToStr(Op op){
