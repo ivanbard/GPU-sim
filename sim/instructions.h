@@ -5,8 +5,16 @@
 
 enum Op { ALU=0, LD=1, ST=2, EXIT=3 };
 
-extern std::vector<Op> program;
+struct Instruction {
+    Op op;
+    int dst = 0; // destination register
+    int src1 = 0; //source register 1
+    int src2 = 0; //source register 2
+};
+
+extern std::vector<Instruction> program;
 extern int L;
+extern int ST_L;
 
 const char* opToStr(Op op);
 void exec_inst(SimState& s, int warp_idx);
