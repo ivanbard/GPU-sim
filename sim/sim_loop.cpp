@@ -3,6 +3,7 @@
 #include "instructions.h"
 
 int main(){
+    load_program("../kernels/test.kern");
     SimState s;
     s.warps.resize(4);
     s.cycle = 0;

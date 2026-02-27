@@ -1,7 +1,9 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "instructions.h"
 
-std::vector<Op> program = { LD, EXIT };
+std::vector<Op> program = {}; // populated by load_program()
 
 const char* opToStr(Op op){
     switch(op){
@@ -34,4 +36,27 @@ void exec_inst(SimState& s, int warp_idx){
     } else {
         s.warps[warp_idx].setPC(pc_val +1);
     }
+}
+
+// load up the instructions from the kernel file
+void load_program(const std::string& filepath){
+    std::ifstream inputFile(filepath); //test kernel file
+    if (!inputFile.is_open()){
+        std::cerr << "Error: could not open kernel file: " << filepath << "\n";
+        exit(1);
+    }
+    std::string line;
+    while (std::getline(inputFile, line)) {
+        if (line == "ALU"){
+            program.push_back(ALU);
+        } else if (line=="LD"){
+            program.push_back(LD);
+        } else if (line == "ST"){
+            program.push_back(ST);
+        }else if (line=="EXIT"){
+            program.push_back(EXIT);
+        }
+
+    }
+
 }
