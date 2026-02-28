@@ -12,11 +12,11 @@ const char* opToStr(Op op){
         case ALU: return "ALU";
         case LD: return "LD";
         case ST: return "ST";
-        case EXIT:     return "EXIT";
-        case BEQ:      return "BEQ";
-        case ELSE_OP:  return "ELSE";
+        case EXIT: return "EXIT";
+        case BEQ: return "BEQ";
+        case ELSE_OP: return "ELSE";
         case ENDIF_OP: return "ENDIF";
-        default:       return "UNKNOWN"; //for any errors
+        default: return "UNKNOWN"; //for any errors
     }
 }
 
@@ -54,23 +54,22 @@ void exec_inst(SimState& s, int warp_idx){
         s.warps[warp_idx].setDone(true);
         s.stats.warps_completed++;
     } else if (op == BEQ){
-        // Simplified divergence model: lower 16 threads of the active mask take the
-        // branch, upper 16 do not. Represents a 50/50 thread split within the warp.
-        // (Full model would compute taken_mask per-thread from register values.)
-        uint32_t taken_mask  = s.warps[warp_idx].getActiveMask() & 0x0000FFFF;
-        uint32_t not_taken   = s.warps[warp_idx].getActiveMask() & ~taken_mask;
-        s.warps[warp_idx].pushMask(not_taken);        // save else-threads for ELSE
+        // simplified divergence model: lower 16 threads of the active mask take the
+        // branch, upper 16 do not, represents a 50/50 thread split within the warp
+        uint32_t taken_mask = s.warps[warp_idx].getActiveMask() & 0x0000FFFF;
+        uint32_t not_taken = s.warps[warp_idx].getActiveMask() & ~taken_mask;
+        s.warps[warp_idx].pushMask(not_taken);  // save else-threads for ELSE
         s.warps[warp_idx].setActiveMask(taken_mask);  // only taken threads active in if-body
         s.warps[warp_idx].setPC(pc_val + 1);
     } else if (op == ELSE_OP){
-        uint32_t else_mask  = s.warps[warp_idx].popMask();                       // not-taken threads
-        uint32_t full_mask  = s.warps[warp_idx].getActiveMask() | else_mask;     // full pre-branch mask
-        s.warps[warp_idx].pushMask(full_mask);        // save for ENDIF to restore
-        s.warps[warp_idx].setActiveMask(else_mask);   // activate else-threads
+        uint32_t else_mask = s.warps[warp_idx].popMask();// not-taken threads
+        uint32_t full_mask = s.warps[warp_idx].getActiveMask() | else_mask; // full pre-branch mask
+        s.warps[warp_idx].pushMask(full_mask);  // save for ENDIF to restore
+        s.warps[warp_idx].setActiveMask(else_mask); // activate else-threads
         s.warps[warp_idx].setPC(pc_val + 1);
     } else if (op == ENDIF_OP){
         uint32_t full_mask = s.warps[warp_idx].popMask();
-        s.warps[warp_idx].setActiveMask(full_mask);   // all threads reunite
+        s.warps[warp_idx].setActiveMask(full_mask); // all threads reunite
         s.warps[warp_idx].setPC(pc_val + 1);
     }
 }
